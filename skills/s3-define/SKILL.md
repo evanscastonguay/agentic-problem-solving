@@ -1,9 +1,9 @@
 ---
-name: define
-description: Define the problem statement, constraints, and success criteria before exploring solutions.
+name: s3-define
+description: Step 3 of 6 — Define the problem statement, constraints, and success criteria before exploring solutions.
 ---
 
-# define
+# Step 3 — Define
 
 - state the problem in one sentence
 - explain why it matters (impact)

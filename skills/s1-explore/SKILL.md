@@ -1,9 +1,9 @@
 ---
-name: explore
-description: Deeply analyze a project by reading code, tracing call flows, and identifying features. Understand what the system does, how it works, and why it exists.
+name: s1-explore
+description: Step 1 of 6 — Deeply analyze a project by reading code, tracing call flows, and identifying features. Understand what the system does, how it works, and why it exists.
 ---
 
-# explore
+# Step 1 — Explore
 
 First principle: understand what the system DOES, how it WORKS, and why it EXISTS — before changing anything.
 

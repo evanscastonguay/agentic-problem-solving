@@ -1,9 +1,9 @@
 ---
-name: implement
-description: Local change to test to self-review to PR loop. Reduce uncertainty with small changes and fast feedback.
+name: s6-implement
+description: Step 6 of 6 — Local change to test to self-review to PR loop. Reduce uncertainty with small changes and fast feedback.
 ---
 
-# implement
+# Step 6 — Implement
 
 Use when: a small, isolated change where speed matters. First principle: reduce uncertainty with small changes and fast feedback. Review effort should scale with change risk.
 

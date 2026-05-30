@@ -14,12 +14,12 @@ You wouldn't tell a new intern "make it better" and walk away. Don't do it to AI
 You are the speaker; the AI is the audience. If the AI fails, the transfer was unsuccessful. Experts don't write better prompts — they transfer context.
 
 ## The six steps (each transfers something)
-1. **explore** -> situational awareness
-2. **clarify** -> precision
-3. **define** -> the target
-4. **solutions** -> strategic thinking
-5. **plan** -> memory
-6. **implement** -> accountability (verify with evidence, not confidence)
+1. **s1-explore** -> situational awareness
+2. **s2-clarify** -> precision
+3. **s3-define** -> the target
+4. **s4-solutions** -> strategic thinking
+5. **s5-plan** -> memory
+6. **s6-implement** -> accountability (verify with evidence, not confidence)
 
 ## Delegate outcomes, not tasks
 The biggest jump in leverage is moving from delegating *tasks* ("fix this bug") to delegating *outcomes* ("refactor to support X, all tests passing"). To get there, front-load the transfer of understanding — exactly what the six steps do.

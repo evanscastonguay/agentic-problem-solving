@@ -1,9 +1,9 @@
 ---
-name: solutions
-description: Provide 3 distinct solutions with pros/cons; use first principles to recommend the simplest effective one.
+name: s4-solutions
+description: Step 4 of 6 — Provide 3 distinct solutions with pros/cons; use first principles to recommend the simplest effective one.
 ---
 
-# solutions
+# Step 4 — Solutions
 
 - use first principles to identify the core of the problem
 - provide 3 genuinely distinct solutions (conservative to innovative)
