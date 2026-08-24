@@ -31,6 +31,17 @@ Run them in order, or jump in where you are. Each step hands the AI one thing it
 
 The magic isn't any single step — it's that together they force you to transfer understanding instead of hoping a prompt lands.
 
+## Supporting skills
+
+Standalone skills that complement the six-step chain:
+
+| Skill | What it does |
+|-------|--------------|
+| `/tdd` | Test-driven development with a red-green-refactor loop — vertical slices, one test at a time, with references on deep modules, mocking, and refactoring |
+| `/s2-grill-me` | Flips step 2 around: the AI interviews *you* relentlessly about a plan until you reach shared understanding |
+| `/ubiquitous-language` | Extracts a DDD-style glossary from the conversation, flags ambiguous terms, and proposes canonical ones |
+| `/handoff` | Compacts the current conversation into a handoff document so a fresh session can pick up where you left off |
+
 ## Not just for code
 
 The same chain works for any complex problem you'd hand a sharp collaborator — strategy, planning, writing, analysis, research. Explore the landscape, clarify the ask, define success, weigh options, plan, execute and verify. Code is just where the payoff is easiest to see.
