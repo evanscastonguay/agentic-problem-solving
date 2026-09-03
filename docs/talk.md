@@ -1,4 +1,4 @@
-# AI-Assisted Development Presentation Full Transcript (45 min, Engineering)
+# The Map: AI-Assisted Development (45-minute talk)
 
 ## Slide 1: Title - The Map
 I want to start with a simple image: a map. Every team has goals, but most of us
@@ -81,20 +81,21 @@ good plan and a plan that fails at runtime.
 
 Visual: a small tool belt icon and a "keys" icon.
 
-## Slide 8: Routes and Tradeoffs (Solutions + Compare)
-There are always multiple routes. Fast, safe, risky. That is s4-solutions and
-compare.
+## Slide 8: Routes and Tradeoffs (Solutions)
+There are always multiple routes. Fast, safe, risky. That is s4-solutions: three
+genuinely different options, honest pros and cons, one decisive recommendation.
 
 For our quest, we could:
 1) Apply a quick patch to meet the demo.
 2) Refactor the flow for long-term safety.
 3) Stage a rollout to reduce risk.
 
-We compare them and decide what we value. This step keeps us honest.
+We weigh them against the success criteria from s3-define and decide what we
+value. This step keeps us honest, and it is the step most teams skip.
 
 Visual: three routes with small labels: fast, safe, risky.
 
-## Slide 9: The Plan (Propose)
+## Slide 9: The Plan
 Now we commit to a route. This is s5-plan. We break the mission into phases.
 We name the risks. We define tests and checkpoints.
 
@@ -119,16 +120,16 @@ In any game, you save before a risky fight. Here the save slot is the plan file
 from s5-plan plus a git branch: you can reload either one while you explore, and
 handoff carries the state into a fresh session.
 
-When the mission ends, you clean up. That is cleanup. It keeps the map tidy and
-prevents confusion later.
+When the mission ends, the plan file records what was done and why. The next
+person, or the next session, starts from there instead of from zero.
 
-Visual: a save flag and a small recycle icon.
+Visual: a save flag next to a small document icon.
 
-## Slide 12: Re-Orient (Where, Doc, Next)
-Even good plans drift. So we re-orient.
-- where answers "Where are we now?"
-- doc keeps a travel log of decisions and outcomes.
-- next chooses the next waypoint so we do not stall.
+## Slide 12: Re-Orient (The Plan File)
+Even good plans drift. So we re-orient, and the plan file is how.
+- Re-read it: it says where we are and what is left.
+- Update it: decisions and outcomes go in as they happen, so it stays the log.
+- Its "first action" line is the next waypoint, so we never stall on "what now?"
 
 This is how a team stays aligned when the mission gets messy.
 
