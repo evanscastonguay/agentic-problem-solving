@@ -52,7 +52,7 @@ One command deploys every skill to the AI tools on your machine — Claude Code,
 
 ```bash
 git clone https://github.com/evanscastonguay/agentic-problem-solving.git
-cd agentic-problem-solving/release
+cd agentic-problem-solving
 ./release.sh --all                 # or: --target claude | codex | cursor | windsurf
 ```
 
@@ -73,14 +73,12 @@ Everything deploys together; nothing private enters this repo.
 ## Repository layout
 
 ```
-skills/       the source of truth — one SKILL.md per skill
-prompts/      generated from skills/ for Codex and Cursor   (do not edit)
-workflows/    generated from skills/ for Windsurf           (do not edit)
-release/      release.sh (deploy), skill.sh (create/archive), generate.sh
-docs/         guides, training material, and talks — also the GitHub Pages site
+skills/       one SKILL.md per skill — the only thing to edit
+release.sh    deploys skills/ to each tool; generates Codex/Cursor prompts and Windsurf workflows on the fly
+docs/         getting started, training guides, talk material — also the GitHub Pages site
 ```
 
-Add a skill with `release/skill.sh create my-skill`, edit its `SKILL.md`, then `release/release.sh --all`.
+Add a skill: create `skills/<name>/SKILL.md`, then `./release.sh --all`.
 
 ## Why it works
 
