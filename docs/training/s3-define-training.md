@@ -1,74 +1,7 @@
 # Training: s3-define Skill
 
-## Learning Objectives
+Practice for step 3. Read `skills/s3-define/SKILL.md` first (12 lines), then work through the examples and exercises here. Time: 20 to 30 minutes.
 
-By the end of this training, you will be able to:
-
-1. **Write a one-sentence problem statement** that captures the core issue
-2. **Quantify success criteria** with measurable outcomes
-3. **Identify constraints** that bound the solution space
-4. **Avoid common mistakes** like including solutions in problem statements
-5. **Hand off effectively** to s4-solutions
-
-## Prerequisites
-
-- Completed [Getting Started](../getting-started.md) guide
-- Understanding of basic workflow sequence
-- A real or practice problem to define
-
-**Time to complete**: 20-30 minutes
-
----
-
-## Overview
-
-`s3-define` is the foundational skill in the AI assistant's planning workflow. It transforms vague requests into clear, actionable problem statements that guide all subsequent decision-making.
-
-## Purpose
-
-- **Input**: Ambiguous problem descriptions or user requests
-- **Output**: Structured problem definition with constraints and success criteria
-- **Position**: First step after discovery (s1-explore, s2-clarify)
-
-## When to Use
-
-Use `s3-define` when you have:
-
-- A new task or feature request
-- An unclear problem statement
-- Multiple stakeholders with different interpretations
-- A complex decision requiring structured analysis
-
-**Do NOT use** when the problem is already clearly defined.
-
-## How It Works
-
-### Step-by-Step Process
-
-1. **State the problem in one sentence**
-   - Capture the core issue concisely
-   - Focus on what needs to be solved, not how
-
-2. **Explain why it matters (impact)**
-   - Business value or user benefit
-   - Technical implications
-   - Risk of not solving it
-
-3. **List constraints and context**
-   - Technical limitations
-   - Time/budget constraints
-   - Existing system constraints
-   - Stakeholder requirements
-
-4. **Define success criteria**
-   - Measurable outcomes
-   - Acceptance conditions
-   - What "done" looks like
-
-5. **List assumptions or unknowns**
-   - What you assume to be true
-   - What you don't know yet
-   - Risks that could invalidate assumptions
 
 ## Examples
 
@@ -129,55 +62,6 @@ Use `s3-define` when you have:
 
 ❌ **Bad**: Assuming everything is known
 ✅ **Good**: "Assuming third-party API remains stable, current team size stays constant"
-
-## Integration with Other Skills
-
-### Workflow Sequence
-
-```
-s1-explore → s2-clarify → s3-define → s4-solutions → s5-plan → s6-implement
-```
-
-### Handing Off to Next Skills
-
-- **To s4-solutions**: Provides clear problem for generating options
-- **To s5-plan**: Enables scope definition and planning
-- **To s06/s07**: Guides implementation toward success criteria
-
-### Context Preservation
-
-The output serves as a reference document for the entire project lifecycle. Revisit it when:
-
-- Scope creep occurs
-- Requirements change
-- Success validation happens
-
-## Best Practices
-
-### Keep It Concise
-
-- Problem statement: 1 sentence
-- Impact: 2-3 bullet points
-- Constraints: 3-5 items
-- Success criteria: 3-5 measurable outcomes
-- Assumptions: 3-5 key items
-
-### Use Quantifiable Metrics
-
-- Instead of "fast", say "<500ms response time"
-- Instead of "reliable", say "99.9% uptime"
-- Instead of "user-friendly", say "NPS score >8/10"
-
-### Validate with Stakeholders
-
-- Share the definition before proceeding
-- Get agreement on success criteria
-- Document any disagreements for future reference
-
-### Iterate as Needed
-
-- If new information emerges, update the definition
-- Don't treat it as immutable, but track changes
 
 ## Training Exercises
 
@@ -377,18 +261,3 @@ Answer these questions to confirm mastery:
 4. Record disagreement as an assumption/risk
 
 ---
-
-## Key Takeaways
-
-1. **s3-define is about clarity, not solutions** - It sets up the problem for others to solve
-2. **Quality matters** - A poor definition leads to poor solutions
-3. **It's iterative** - Refine as you learn more
-4. **It's collaborative** - Involve stakeholders in validation
-5. **It's foundational** - Everything else builds on this clarity
-
-## Related Skills
-
-- **s2-clarify**: If the problem is too vague to define
-- **s4-solutions**: Uses this definition to generate options
-- **s5-plan**: Uses this to scope implementation
-- **handoff**: Carry this definition into a fresh session without losing it

@@ -60,6 +60,17 @@ Prefer to do it by hand? The skills are plain markdown: `cp -r skills/* ~/.claud
 
 They sort `s1`…`s6` in your skill picker, so the order is always in front of you.
 
+### First run, ten minutes
+
+Pick a real task, say "add dark mode", and run it through the chain:
+
+1. `/s3-define` — one-sentence problem, constraints, measurable success criteria.
+2. `/s4-solutions` — three approaches, pros and cons, one decisive recommendation.
+3. `/s5-plan` — phased plan with risks and tests, saved to a file you can resume from.
+4. `/s6-implement` — run the plan phase by phase: change, test, self-review, PR.
+
+You end with a problem statement, a recorded decision, a plan file, and a verified implementation. Skip steps already done; for a small change, go straight to `/s6-implement`. When output is vague, rerun `/s3-define` with explicit constraints. When the AI is guessing, run `/s2-clarify`. When you lose the thread between sessions, re-read the plan file or run `/handoff` before you stop.
+
 ### Keep private skills alongside
 
 Work or client-specific skills should never land in a public repo. Keep them in their own folder and overlay them at deploy time:
@@ -75,7 +86,7 @@ Everything deploys together; nothing private enters this repo.
 ```
 skills/       one SKILL.md per skill — the only thing to edit
 release.sh    deploys skills/ to each tool; generates Codex/Cursor prompts and Windsurf workflows on the fly
-docs/         getting started, training guides, talk material — also the GitHub Pages site
+docs/         why it works, a 45-minute talk, training guides — also the GitHub Pages site
 ```
 
 Add a skill: create `skills/<name>/SKILL.md`, then `./release.sh --all`.
@@ -85,6 +96,13 @@ Add a skill: create `skills/<name>/SKILL.md`, then `./release.sh --all`.
 - **Treat AI like a brilliant intern** — vast knowledge, but context-blind and eager to please.
 - **Delegate outcomes, not tasks.**
 - **Trust evidence, not confidence** — make it verify its own work.
+
+Longer version: [docs/method.md](docs/method.md).
+
+## Teach it
+
+- [docs/talk.md](docs/talk.md) — a 45-minute talk, slide by slide, with speaker notes
+- [docs/training/](docs/training/) — practice guides for steps 3, 4 and 5: worked examples, common mistakes, exercises with answers
 
 ## License
 
