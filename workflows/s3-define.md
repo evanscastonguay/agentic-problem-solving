@@ -1,9 +1,8 @@
 ---
-name: s3-define
 description: Step 3 of 6 — Define the problem statement, constraints, and success criteria before exploring solutions. Use when the user asks to define a problem or write a problem statement, or when scope and success criteria are unclear before choosing a solution.
 ---
 
-# Step 3 — Define
+# s3-define Workflow
 
 - state the problem in one sentence
 - explain why it matters (impact)
