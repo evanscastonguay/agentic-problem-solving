@@ -28,4 +28,4 @@ Output: 3 bullets (root cause, fix, verification).
 Verify: include the exact test or command to validate."
 
 ## Optional Footer (Small Text)
-"Full checklist: docs/prompt_engineering_best_practices.md"
+"Full method: docs/agent-assisted-problem-solving.md"
