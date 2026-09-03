@@ -1,9 +1,6 @@
----
-name: s6-implement
-description: Step 6 of 6 — Local change to test to self-review to PR loop. Reduce uncertainty with small changes and fast feedback. Use when the user asks to implement, build, fix, or ship a change, or when a plan file exists and is ready to execute.
----
+# 6 Implement
 
-# Step 6 — Implement
+> Step 6 of 6 — Local change to test to self-review to PR loop. Reduce uncertainty with small changes and fast feedback. Use when the user asks to implement, build, fix, or ship a change, or when a plan file exists and is ready to execute.
 
 Use when: a small, isolated change where speed matters. First principle: reduce uncertainty with small changes and fast feedback. Review effort should scale with change risk.
 

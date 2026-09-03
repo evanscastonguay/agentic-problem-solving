@@ -1,9 +1,6 @@
----
-name: s5-plan
-description: Step 5 of 6 — Define scope, phased steps, risks, tests, checkpoints, and the first action, then write the plan to a file. Use when the user asks for a plan, roadmap, or phased steps, or before implementing anything non-trivial.
----
+# 5 Plan
 
-# Step 5 — Plan
+> Step 5 of 6 — Define scope, phased steps, risks, tests, checkpoints, and the first action, then write the plan to a file. Use when the user asks for a plan, roadmap, or phased steps, or before implementing anything non-trivial.
 
 First principle: a written plan is a persistent save point the agent (and you) can resume from across sessions.
 

@@ -48,12 +48,39 @@ The same chain works for any complex problem you'd hand a sharp collaborator —
 
 ## Install
 
+One command deploys every skill to the AI tools on your machine — Claude Code, Codex, Cursor, and Windsurf:
+
 ```bash
 git clone https://github.com/evanscastonguay/agentic-problem-solving.git
-cp -r agentic-problem-solving/skills/* ~/.claude/skills/
+cd agentic-problem-solving/release
+./release.sh --all                 # or: --target claude | codex | cursor | windsurf
 ```
 
-They sort `s1`…`s6` in your skill picker, so the order is always in front of you. Any tool that reads markdown command files works (Cursor, etc.).
+Prefer to do it by hand? The skills are plain markdown: `cp -r skills/* ~/.claude/skills/`.
+
+They sort `s1`…`s6` in your skill picker, so the order is always in front of you.
+
+### Keep private skills alongside
+
+Work or client-specific skills should never land in a public repo. Keep them in their own folder and overlay them at deploy time:
+
+```bash
+./release.sh --all --extra-skills ~/work/private-skills
+```
+
+Everything deploys together; nothing private enters this repo.
+
+## Repository layout
+
+```
+skills/       the source of truth — one SKILL.md per skill
+prompts/      generated from skills/ for Codex and Cursor   (do not edit)
+workflows/    generated from skills/ for Windsurf           (do not edit)
+release/      release.sh (deploy), skill.sh (create/archive), generate.sh
+docs/         guides, training material, and talks — also the GitHub Pages site
+```
+
+Add a skill with `release/skill.sh create my-skill`, edit its `SKILL.md`, then `release/release.sh --all`.
 
 ## Why it works
 
