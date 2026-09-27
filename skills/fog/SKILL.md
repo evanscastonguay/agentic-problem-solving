@@ -12,26 +12,27 @@ The page is also the memory: `fog.html` stores its state in a JSON block. Each r
 ## 1. Gather
 
 - **Previous state:** from the working directory, `python3 <this skill folder>/fog.py extract fog.html` (the folder is usually `~/.claude/skills/fog/`; prints `{}` the first time). Keep `artifact_url`. Compare with what you find next to fill `changes_since_last`.
-- **The conversation:** including any compaction summary. It is the only record of what the user asked and what is pending.
-- **Plan files:** `ls -t *PLAN*.md *SHIP*.md *TODO*.md docs/*PLAN*.md 2>/dev/null` and any plan the conversation names. Decide which one is **active** (the one the recent work follows) and mark the others **stale** or **reference**. When a plan file and the conversation disagree, say so in the page.
-- **Recent activity:** `git log --oneline -15` and `git status -sb` if it is a repo; the task list if one exists.
-- **Another session:** if the argument is a `.jsonl` transcript path, analyze that transcript instead of this conversation. Transcripts are large: extract the human messages, AskUserQuestion calls, compaction summaries, and plan-file writes with a script (or a subagent), never read the whole file.
+- **The conversation:** including any compaction summary and the answers to earlier AskUserQuestion prompts. It is the only record of what the user asked and what is pending. Note the last thing the AI asked or was doing: it becomes `now.doing` or an entry in `waiting_on_you`.
+- **Plan files:** `find . -maxdepth 4 \( -name '*PLAN*.md' -o -name '*SHIP*.md' -o -name '*TODO*.md' \) -not -path '*/node_modules/*' -exec ls -lt {} +` (this also finds plans in nested repos) and any plan the conversation names. Decide which one is **active** (the one the recent work follows) and mark the others **stale** or **reference**. When a plan file and the conversation disagree, say so in the page.
+- **Recent activity:** `git log --oneline -15` and `git status -sb` in each repo that holds an active plan; the session's task list (TaskList) if one exists.
+- **Another session:** if the argument is a `.jsonl` transcript path, analyze that transcript instead of this conversation. Transcripts are large: extract the human messages, AskUserQuestion calls, compaction summaries, and plan-file writes with a script (or a subagent), never read the whole file. Work from the latest day and the last compaction summary; older history only explains codes and decisions. Read that session's project folder, but write `fog.html` in the current working directory.
 
 ## 2. Distill
 
 Write the state JSON (schema below). Rules:
 
 - **Plain words.** Write for someone smart who was not in the room. No jargon without a meaning next to it.
-- **Decode every reference.** Every code, number or nickname the conversation used (`P4`, `#74`, `N1`, "option B", "the ghost bug", a branch name) goes into `decoder` with one plain sentence of meaning and why it matters. Inside the page, never use a bare code: write "P4 (live test + speed tuning)".
+- **Decode every reference.** Every code, number or nickname the recent conversation used (`P4`, `#74`, `N1`, "option B", "the ghost bug", a branch name) goes into `decoder` with one plain sentence of meaning and why it matters. Group related codes into one entry ("F5, F6: the two CI checks") and keep it under about 40 entries, recent ones first. Inside the page, never use a bare code: write "P4 (live test + speed tuning)".
 - **Outcomes, not activity.** "Login works on the phone", not "edited auth.ts".
 - **Short.** `goal` one sentence (≤ 25 words). Each item ≤ 12 words; put more in `detail`. `glance` ≤ 20 words.
-- **Main thread first.** The thread the user is working on now gets `"main": true` and the done / doing / remaining board. Every side thread (another feature, a printer detour, an email to send) gets one entry with a status and a one-line summary.
-- **Waiting on you** holds every open question or blocked decision, rewritten so it can be answered cold: `where` (phase and step), `context` (what it refers to, in plain words), `options` with what each changes for the user, a `recommended` flag, and `why`. If nothing is waiting, leave it empty.
+- **Main thread first.** The thread the user is working on now gets `"main": true` and the done / doing / remaining board; the counts in the chat reply come from it. `now.phase` is free text for where the plan stands, e.g. "Phase 1 almost done, Phase 2 at 21%". Every side thread (another feature, a printer detour, an email to send) gets one entry with a status and a one-line summary.
+- **Waiting on you** holds every open question or blocked decision, rewritten so it can be answered cold: `where` (phase and step), `context` (what it refers to, in plain words), `options` with what each changes for the user, a `recommended` flag, and `why`. Decisions come first. Chores only the user can do (create an account, back up a key, review a document) come after, one entry each, with `where` and `context` but no `options`. If nothing is waiting, leave it empty.
 - **Decisions** keep a one-line `why`; open ones are `"status": "open"`.
 - **Ideas:** at most 5, only concepts the user needs to follow the current or next decision. Three layers: `glance` (one sentence), `understand` (a short paragraph with an everyday comparison), `deeper` (the exact details).
 - Never invent progress. Mark something done only with evidence (a passing test, a commit, a user confirmation).
 - Write in the conversation's language; an argument like `fr` or `en` overrides it.
-- Redact secrets, tokens and personal data.
+- Redact secrets and tokens. Never name people, the user included: refer to them by role ("the Mac tester"), and leave out usernames, emails and paths that contain a name.
+- `updated` is local time with its zone ("2026-09-27 12:11 EDT"); transcripts store UTC. In `sources`, name another session as "transcript <first 8 chars of its id>".
 
 Schema:
 
@@ -39,7 +40,7 @@ Schema:
 {
   "version": 1,
   "project": "Omac",
-  "updated": "YYYY-MM-DD HH:MM",
+  "updated": "YYYY-MM-DD HH:MM TZ",
   "language": "en",
   "artifact_url": "",
   "goal": "",
