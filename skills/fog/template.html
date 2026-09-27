@@ -147,6 +147,8 @@ button:hover { border-color: var(--accent); }
 .row details[open] summary::after { content: " \2212"; }
 .row .more { color: var(--muted); font-size: .9rem; padding-top: 2px; }
 .dot.you { background: var(--wait); }
+.dot.dropped { background: transparent; border: 1px solid var(--left); }
+.row.dropped .t { color: var(--muted); text-decoration: line-through; }
 .coverage { font-size: .9rem; padding: 8px 12px; border-radius: 8px; background: var(--done-soft); }
 .coverage.gap { background: var(--wait-soft); }
 footer { font-size: .85rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
@@ -380,10 +382,10 @@ footer { font-size: .85rem; color: var(--muted); border-top: 1px solid var(--lin
   ]));
 
   // Every item, by phase
-  var MARK = { done: "done", doing: "doing", left: "left", you: "you" };
+  var MARK = { done: "done", doing: "doing", left: "left", you: "you", dropped: "dropped" };
   function phases(t) {
     return arr(t.phases).map(function (ph) {
-      var items = arr(ph.items), c = { done: 0, doing: 0, left: 0, you: 0 };
+      var items = arr(ph.items), c = { done: 0, doing: 0, left: 0, you: 0, dropped: 0 };
       items.forEach(function (it) { c[MARK[it.status] || "left"]++; });
       var rows = el("ul", "rows", items.map(function (it) {
         var st = MARK[it.status] || "left";
@@ -393,7 +395,7 @@ footer { font-size: .85rem; color: var(--muted); border-top: 1px solid var(--lin
         return li;
       }));
       var d = el("details", "phase", [el("summary", "", [el("strong", "", ph.name),
-        el("span", "tally", c.done + "/" + items.length + " " + L.done.toLowerCase() + (c.you ? " · " + c.you + " " + L.fYou.toLowerCase() : ""))]), rows]);
+        el("span", "tally", c.done + "/" + (items.length - c.dropped) + " " + L.done.toLowerCase() + (c.you ? " · " + c.you + " " + L.fYou.toLowerCase() : ""))]), rows]);
       if (ph.current || c.doing || c.you) d.open = true;
       return d;
     });
