@@ -330,11 +330,22 @@ footer { font-size: .85rem; color: var(--muted); border-top: 1px solid var(--lin
   }
 
   // You are here
+  // Counts come from the complete list when there is one, so the top agrees with "Every item".
   var d = arr(main.done).length, g = arr(main.doing).length, l = arr(main.left).length, w = arr(S.waiting_on_you).length;
+  var all = [];
+  arr(main.phases).forEach(function (ph) { all = all.concat(arr(ph.items)); });
+  if (all.length) {
+    var cnt = function (s) { return all.filter(function (it) { return it.status === s; }).length; };
+    d = cnt("done"); g = cnt("doing"); w = Math.max(w, cnt("you")); l = cnt("left") + cnt("you");
+  }
   var trail = el("div", "trail");
   trail.setAttribute("role", "img");
   trail.setAttribute("aria-label", d + " " + L.done + ", " + g + " " + L.doing + ", " + l + " " + L.left);
-  for (var i = 0; i < d + g + l; i++) trail.appendChild(el("span", i < d ? "d" : i < d + g ? "g" : ""));
+  if (d + g + l > 24) {   // many items: three proportional bands instead of one block per item
+    [[d, "d"], [g, "g"], [l, ""]].forEach(function (x) { if (x[0]) { var s = el("span", x[1]); s.style.flex = x[0]; trail.appendChild(s); } });
+  } else {
+    for (var i = 0; i < d + g + l; i++) trail.appendChild(el("span", i < d ? "d" : i < d + g ? "g" : ""));
+  }
   var now = S.now || {};
   app.appendChild(el("section", "here", [
     el("div", "label", L.here + (now.thread ? " · " + now.thread : "")),
