@@ -7,6 +7,8 @@ description: Remove the fog of war in a long session — rebuild a plain-languag
 
 First principle: after hours of autonomous work, the person has lost the map, not the plot. Give them the map in plain words, in layers, and let them stop reading as soon as they know where they are.
 
+Two layers, both required: a **short summary** on top (where we are, next step, what needs the user), and a **complete itemized list** below (every plan item with its status). The summary may group; the list may not drop anything.
+
 The page is also the memory: `fog.html` stores its state in a JSON block. Each run reads the previous state, updates it, and rewrites the page. There is no other file.
 
 ## 1. Gather
@@ -25,7 +27,10 @@ Write the state JSON (schema below). Rules:
 - **Decode every reference.** Every code, number or nickname the recent conversation used (`P4`, `#74`, `N1`, "option B", "the ghost bug", a branch name) goes into `decoder` with one plain sentence of meaning and why it matters. Group related codes into one entry ("F5, F6: the two CI checks") and keep it under about 40 entries, recent ones first. Inside the page, never use a bare code: write "P4 (live test + speed tuning)".
 - **Outcomes, not activity.** "Login works on the phone", not "edited auth.ts".
 - **Short.** `goal` one sentence (≤ 25 words). Each item ≤ 12 words; put more in `detail`. `glance` ≤ 20 words.
-- **Main thread first.** The thread the user is working on now gets `"main": true` and the done / doing / remaining board; the counts in the chat reply come from it. `now.phase` is free text for where the plan stands, e.g. "Phase 1 almost done, Phase 2 at 21%". Every side thread (another feature, a printer detour, an email to send) gets one entry with a status and a one-line summary.
+- **Complete list.** For the main thread, fill `phases` with **every item** of the active plan file, in the plan's order and grouping, each with `status`: `done`, `doing`, `left`, or `you` (needs the user). Extract the items with a script (checkbox lines, table rows with an ID, numbered steps), never from memory. Keep the plan's ID in `id` and write `text` in plain words. Add items the conversation created that the plan lacks, with `"source": "chat"`. Mark the phase being worked on `"current": true`. Side threads get `phases` too when they have their own plan or list.
+- **Coverage.** Set `coverage` from that script's count: `plan_items` (items in the plan), `listed` (plan items in `phases`), `from_chat`. `listed` must equal `plan_items`; if it cannot, the page flags the gap in red, so say why in the chat reply.
+- **Next step.** `next.ai` is the AI's next concrete action; `next.you` is the single most useful thing the user can do now (or "Nothing, the AI can continue"). Both are one sentence.
+- **Main thread first.** The thread the user is working on now gets `"main": true` and the done / doing / remaining board (the grouped summary, at most about 8 items per column); the counts in the chat reply come from it. `now.phase` is free text for where the plan stands, e.g. "Phase 1 almost done, Phase 2 at 21%". Every side thread (another feature, a printer detour, an email to send) gets one entry with a status and a one-line summary.
 - **Waiting on you** holds every open question or blocked decision, rewritten so it can be answered cold: `where` (phase and step), `context` (what it refers to, in plain words), `options` with what each changes for the user, a `recommended` flag, and `why`. Decisions come first. Chores only the user can do (create an account, back up a key, review a document) come after, one entry each, with `where` and `context` but no `options`. If nothing is waiting, leave it empty.
 - **Decisions** keep a one-line `why`; open ones are `"status": "open"`.
 - **Ideas:** at most 5, only concepts the user needs to follow the current or next decision. Three layers: `glance` (one sentence), `understand` (a short paragraph with an everyday comparison), `deeper` (the exact details).
@@ -46,9 +51,13 @@ Schema:
   "goal": "",
   "changes_since_last": [""],
   "now": { "thread": "", "phase": "Phase 2 of 6: ...", "doing": "What the AI is doing right now, in plain words" },
+  "next": { "ai": "The AI's next concrete action", "you": "The most useful thing the user can do now" },
+  "coverage": { "plan_file": "PLAN-x.md", "plan_items": 0, "listed": 0, "from_chat": 0 },
   "waiting_on_you": [{ "question": "", "where": "", "context": "", "options": [{ "label": "", "effect": "", "recommended": true }], "why": "" }],
   "threads": [{ "name": "", "main": true, "status": "doing|done|blocked|parked", "summary": "",
-                "done": [{ "text": "", "detail": "" }], "doing": [], "left": [] }],
+                "done": [{ "text": "", "detail": "" }], "doing": [], "left": [],
+                "phases": [{ "name": "Phase 1: ...", "current": false,
+                             "items": [{ "id": "B3", "text": "", "status": "done|doing|left|you", "detail": "", "source": "plan|chat" }] }] }],
   "decisions": [{ "text": "", "why": "", "status": "locked|open" }],
   "decoder": [{ "code": "", "means": "", "why": "" }],
   "ideas": [{ "name": "", "glance": "", "understand": "", "deeper": "" }],
@@ -64,13 +73,14 @@ Schema:
 
 ## 4. Reply in chat
 
-Five lines at most, then the link:
+Six lines, the last one the link:
 
 ```
 📍 <thread> · <phase> — <done> done, <doing> in progress, <left> left
 ⏳ Right now: <what is happening>
+➡️ Next: AI <next.ai> · You <next.you>
 ❓ Waiting on you: <the question in one line, or "nothing">
-🔁 Since last time: <biggest change>
+🔁 Since last time: <biggest change> · <listed>/<plan_items> plan items listed
 🗺  <link or path to fog.html>
 ```
 

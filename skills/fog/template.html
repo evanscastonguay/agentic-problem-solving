@@ -125,6 +125,30 @@ td.code { font: 500 .88rem var(--mono); white-space: nowrap; color: var(--accent
 .tools { display: flex; gap: 8px; flex-wrap: wrap; }
 button { font: 700 .82rem var(--body); color: var(--accent); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; cursor: pointer; }
 button:hover { border-color: var(--accent); }
+.next { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 720px) { .next { grid-template-columns: 1fr; } }
+.next > div { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 10px; padding: 12px 14px; display: grid; gap: 4px; }
+.next > div.you { border-left-color: var(--wait); }
+.filters { display: flex; flex-wrap: wrap; gap: 6px; }
+.filters button[aria-pressed="true"] { background: var(--accent); color: var(--surface); border-color: var(--accent); }
+.phase { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.phase > summary { cursor: pointer; padding: 10px 14px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.phase > summary::before { content: "\25B8"; display: inline-block; width: 1em; color: var(--accent); transition: transform .15s; }
+.phase[open] > summary::before { transform: rotate(90deg); }
+.phase .tally { font-size: .85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.rows { list-style: none; margin: 0; padding: 0 14px 12px; display: grid; }
+.row { display: grid; grid-template-columns: 1.2em max-content 1fr; gap: 0 8px; align-items: baseline; padding: 5px 0; border-top: 1px solid var(--line); font-size: .95rem; }
+.row .id { font: 500 .8rem var(--mono); color: var(--accent); }
+.row.left .t { color: var(--muted); }
+.row.done .t { color: var(--muted); }
+.row .src { font-size: .72rem; font-weight: 700; color: var(--doing); margin-left: 6px; text-transform: uppercase; letter-spacing: .05em; }
+.row details summary { cursor: pointer; }
+.row details summary::after { content: " +"; color: var(--accent); font-weight: 700; }
+.row details[open] summary::after { content: " \2212"; }
+.row .more { color: var(--muted); font-size: .9rem; padding-top: 2px; }
+.dot.you { background: var(--wait); }
+.coverage { font-size: .9rem; padding: 8px 12px; border-radius: 8px; background: var(--done-soft); }
+.coverage.gap { background: var(--wait-soft); }
 footer { font-size: .85rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
@@ -145,6 +169,11 @@ footer { font-size: .85rem; color: var(--muted); border-top: 1px solid var(--lin
   "phase": "Phase 2 of 4: switch every screen to the new colours",
   "doing": "Converting the editor screen. It is the biggest one and has 40 hard-coded colours."
  },
+ "next": {
+  "ai": "Finish the editor screen, then start the settings screen.",
+  "you": "Answer the dark-mode switch question below (two minutes)."
+ },
+ "coverage": { "plan_file": "PLAN-dark-mode.md", "plan_items": 7, "listed": 7, "from_chat": 1 },
  "waiting_on_you": [
   {
    "question": "Should people be able to force dark mode on, or should it only follow the phone?",
@@ -170,6 +199,24 @@ footer { font-size: .85rem; color: var(--muted); border-top: 1px solid var(--lin
     { "text": "Settings and sharing screens" },
     { "text": "Screenshots test in both themes" },
     { "text": "Release to testers" }
+   ],
+   "phases": [
+    { "name": "Phase 1: choose the colours", "items": [
+     { "id": "1.1", "text": "List every colour the app uses", "status": "done" },
+     { "id": "1.2", "text": "Pick light and dark versions, check contrast", "status": "done", "detail": "Twelve named colours; every pair passes 4.5 to 1." }
+    ]},
+    { "name": "Phase 2: switch every screen", "current": true, "items": [
+     { "id": "2.1", "text": "Editor screen", "status": "doing" },
+     { "id": "2.2", "text": "Settings screen", "status": "you", "detail": "Blocked on the switch question." },
+     { "id": "2.3", "text": "Sharing screen", "status": "left" },
+     { "text": "Fix the grey-on-grey hint text in search", "status": "left", "source": "chat" }
+    ]},
+    { "name": "Phase 3: test", "items": [
+     { "id": "3.1", "text": "Screenshots of every screen in both themes", "status": "left" }
+    ]},
+    { "name": "Phase 4: release", "items": [
+     { "id": "4.1", "text": "Release to testers", "status": "left" }
+    ]}
    ]
   },
   {
@@ -215,14 +262,18 @@ footer { font-size: .85rem; color: var(--muted); border-top: 1px solid var(--lin
     plans: "Fichiers de plan", code: "Référence", means: "Veut dire", why: "Pourquoi ça compte", rec: "Recommandé",
     where: "Où", ctx: "Contexte", reco: "Pourquoi", deeper: "Aller plus loin", openAll: "Tout ouvrir", closeAll: "Tout fermer",
     since: "Depuis votre dernier regard", updated: "Mis à jour", sources: "Sources", refresh: "Relancez /fog pour mettre à jour.",
-    none: "Rien pour l’instant.", nothing: "Rien n’attend de réponse de votre part."
+    none: "Rien pour l’instant.", nothing: "Rien n’attend de réponse de votre part.",
+    next: "Prochaine étape", nextAi: "L’IA va", nextYou: "Vous", all: "Tous les éléments", fAll: "Tout", fLeft: "À faire", fYou: "Vous attend", fDone: "Fait",
+    cover: "éléments du plan listés", fromChat: "venant de la conversation", chat: "conversation", gap: "Des éléments du plan manquent sur cette page."
   } : {
     here: "You are here", now: "Right now", wait: "Waiting on you", done: "Done", doing: "Doing", left: "Remaining",
     threads: "Other threads", decoder: "Reference decoder", decisions: "Decisions", ideas: "Ideas you need",
     plans: "Plan files", code: "Reference", means: "Means", why: "Why it matters", rec: "Recommended",
     where: "Where", ctx: "Context", reco: "Why", deeper: "Go deeper", openAll: "Open all", closeAll: "Close all",
     since: "Since your last look", updated: "Updated", sources: "Sources", refresh: "Run /fog again to refresh.",
-    none: "Nothing yet.", nothing: "Nothing is waiting on you."
+    none: "Nothing yet.", nothing: "Nothing is waiting on you.",
+    next: "Next step", nextAi: "AI next", nextYou: "You next", all: "Every item", fAll: "All", fLeft: "Remaining", fYou: "Needs you", fDone: "Done",
+    cover: "plan items listed", fromChat: "from the conversation", chat: "chat", gap: "Some plan items are missing from this page."
   };
   document.documentElement.lang = S.language || "en";
 
@@ -231,6 +282,7 @@ footer { font-size: .85rem; color: var(--muted); border-top: 1px solid var(--lin
     if (cls) n.className = cls;
     [].concat(kids || []).forEach(function (k) {
       if (k == null || k === "") return;
+      if (Array.isArray(k)) { k.forEach(function (x) { if (x != null && x !== "") n.appendChild(typeof x === "string" ? txt(x) : x); }); return; }
       n.appendChild(typeof k === "string" ? txt(k) : k);
     });
     return n;
@@ -295,6 +347,13 @@ footer { font-size: .85rem; color: var(--muted); border-top: 1px solid var(--lin
     now.doing ? el("p", "now", [el("strong", "", L.now + ": "), now.doing]) : null
   ]));
 
+  // Next step
+  var nx = S.next || {};
+  if (nx.ai || nx.you) app.appendChild(el("section", "", [el("h2", "", L.next), el("div", "next", [
+    nx.ai ? el("div", "", [el("div", "label", L.nextAi), el("p", "", nx.ai)]) : null,
+    nx.you ? el("div", "you", [el("div", "label", L.nextYou), el("p", "", nx.you)]) : null
+  ])]));
+
   // Waiting on you
   var asks = arr(S.waiting_on_you);
   app.appendChild(el("section", "", [el("h2", "", L.wait)].concat(asks.length ? asks.map(function (q) {
@@ -320,6 +379,52 @@ footer { font-size: .85rem; color: var(--muted); border-top: 1px solid var(--lin
     ])
   ]));
 
+  // Every item, by phase
+  var MARK = { done: "done", doing: "doing", left: "left", you: "you" };
+  function phases(t) {
+    return arr(t.phases).map(function (ph) {
+      var items = arr(ph.items), c = { done: 0, doing: 0, left: 0, you: 0 };
+      items.forEach(function (it) { c[MARK[it.status] || "left"]++; });
+      var rows = el("ul", "rows", items.map(function (it) {
+        var st = MARK[it.status] || "left";
+        var t = it.detail ? el("details", "", [el("summary", "", it.text), el("div", "more", it.detail)]) : el("span", "", it.text);
+        var li = el("li", "row " + st, [el("span", "dot " + st), el("span", "id", it.id || ""), el("div", "t", [t, it.source === "chat" ? el("span", "src", L.chat) : null])]);
+        li.dataset.status = st;
+        return li;
+      }));
+      var d = el("details", "phase", [el("summary", "", [el("strong", "", ph.name),
+        el("span", "tally", c.done + "/" + items.length + " " + L.done.toLowerCase() + (c.you ? " · " + c.you + " " + L.fYou.toLowerCase() : ""))]), rows]);
+      if (ph.current || c.doing || c.you) d.open = true;
+      return d;
+    });
+  }
+  var mainPhases = phases(main);
+  if (mainPhases.length) {
+    var filt = el("div", "filters");
+    [["all", L.fAll], ["left", L.fLeft], ["you", L.fYou], ["done", L.fDone]].forEach(function (f, i) {
+      var b = el("button", "", f[1]); b.type = "button"; b.setAttribute("aria-pressed", i ? "false" : "true");
+      b.onclick = function () {
+        filt.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+        allSec.querySelectorAll(".row").forEach(function (r) {
+          var s = r.dataset.status;
+          r.hidden = !(f[0] === "all" || s === f[0] || (f[0] === "left" && (s === "doing" || s === "you")));
+        });
+        if (f[0] !== "all") allSec.querySelectorAll(".phase").forEach(function (p) { p.open = true; });
+      };
+      filt.appendChild(b);
+    });
+    var cv = S.coverage, cover = null;
+    if (cv && cv.plan_items != null) {
+      cover = el("p", "coverage" + (cv.listed < cv.plan_items ? " gap" : ""), [
+        el("strong", "", (cv.listed != null ? cv.listed : "?") + "/" + cv.plan_items), " " + L.cover,
+        cv.plan_file ? [" (", el("code", "", cv.plan_file), ")"] : null,
+        cv.from_chat ? " · +" + cv.from_chat + " " + L.fromChat : null,
+        cv.listed < cv.plan_items ? ". " + L.gap : null]);
+    }
+    var allSec = el("section", "", [el("h2", "", L.all + (main.name ? " · " + main.name : "")), filt].concat(mainPhases, [cover]));
+    app.appendChild(allSec);
+  }
+
   // Other threads
   if (others.length) {
     app.appendChild(el("section", "", [el("h2", "", L.threads)].concat(others.map(function (t) {
@@ -328,7 +433,7 @@ footer { font-size: .85rem; color: var(--muted); border-top: 1px solid var(--lin
         if (arr(t[k[0]]).length) parts.push(el("div", "", [el("div", "label", k[1]), list(t[k[0]])]));
       });
       return el("details", "thread", [el("summary", "", [el("strong", "", t.name), el("span", "pill " + (t.status || "parked"), t.status || ""), t.summary ? el("span", "muted", t.summary) : null]),
-        el("div", "", parts)]);
+        el("div", "", parts.concat(phases(t)))]);
     }))));
   }
 
