@@ -50,7 +50,7 @@ Problems compose in layers: an **objective** (the outcome), **tasks** (deliverab
 | Execute and validate | `s6-implement`, with `tdd` for new behavior |
 | Hand off | `handoff` |
 
-`s2-grill-me` and `ubiquitous-language` support any phase: the first lets the agent interrogate your plan, the second pins down the words before the design.
+`s2-grill-me`, `ubiquitous-language` and `fog` support any phase: the first lets the agent interrogate your plan, the second pins down the words before the design, the third shows where a long session stands and decodes its references.
 
 ## How much process
 

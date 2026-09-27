@@ -41,6 +41,7 @@ Standalone skills that complement the six-step chain:
 | `/s2-grill-me` | Flips step 2 around: the AI interviews *you* relentlessly about a plan until you reach shared understanding |
 | `/ubiquitous-language` | Extracts a DDD-style glossary from the conversation, flags ambiguous terms, and proposes canonical ones |
 | `/handoff` | Compacts the current conversation into a handoff document so a fresh session can pick up where you left off |
+| `/fog` | Removes the fog of war in a long session: a plain-language "you are here" page with done / doing / remaining, what is waiting on you, and every cryptic reference decoded. The page (`fog.html`) is also its memory, so each run picks up from the last |
 
 ## Not just for code
 
@@ -69,7 +70,7 @@ Pick a real task, say "add dark mode", and run it through the chain:
 3. `/s5-plan` — phased plan with risks and tests, saved to a file you can resume from.
 4. `/s6-implement` — run the plan phase by phase: change, test, self-review, PR.
 
-You end with a problem statement, a recorded decision, a plan file, and a verified implementation. Skip steps already done; for a small change, go straight to `/s6-implement`. When output is vague, rerun `/s3-define` with explicit constraints. When the AI is guessing, run `/s2-clarify`. When you lose the thread between sessions, re-read the plan file or run `/handoff` before you stop.
+You end with a problem statement, a recorded decision, a plan file, and a verified implementation. Skip steps already done; for a small change, go straight to `/s6-implement`. When output is vague, rerun `/s3-define` with explicit constraints. When the AI is guessing, run `/s2-clarify`. When you lose the thread in a long session, run `/fog`. Between sessions, re-read the plan file or run `/handoff` before you stop.
 
 ### Keep private skills alongside
 
@@ -86,10 +87,11 @@ Everything deploys together; nothing private enters this repo.
 ```
 skills/       one SKILL.md per skill — the only thing to edit
 release.sh    deploys skills/ to each tool; generates Codex/Cursor prompts and Windsurf workflows on the fly
+global-rules.md  always-on rules, merged into ~/.claude/CLAUDE.md and ~/.codex/AGENTS.md at deploy
 docs/         why it works, a 45-minute talk, training guides — also the GitHub Pages site
 ```
 
-Add a skill: create `skills/<name>/SKILL.md`, then `./release.sh --all`.
+Add a skill: create `skills/<name>/SKILL.md`, then `./release.sh --all`. Deploys only remove skills they installed, so skills from plugins or other sources stay put.
 
 ## Why it works
 

@@ -1,0 +1,368 @@
+<title>Fog map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root {
+  --ground: #f2f4f1; --surface: #ffffff; --ink: #17201c; --muted: #56645f; --line: #d5ddd8;
+  --accent: #1e6b57; --accent-soft: #e2efe9;
+  --done: #2f7a4b; --doing: #a86400; --wait: #b8432e; --left: #7f8b85;
+  --done-soft: #e4f1e8; --doing-soft: #fbefd9; --wait-soft: #fbe6e1; --left-soft: #eceeec;
+  --fog: rgba(127, 139, 133, .10);
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --ground: #101613; --surface: #17201c; --ink: #e5ebe7; --muted: #9aa8a2; --line: #2a3631;
+    --accent: #5cc4a6; --accent-soft: #1b3129;
+    --done: #6cc38b; --doing: #e6a23c; --wait: #ef7f68; --left: #76837d;
+    --done-soft: #1a2e22; --doing-soft: #33260f; --wait-soft: #3a1d17; --left-soft: #1e2623;
+    --fog: rgba(154, 168, 162, .08);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ground: #101613; --surface: #17201c; --ink: #e5ebe7; --muted: #9aa8a2; --line: #2a3631;
+  --accent: #5cc4a6; --accent-soft: #1b3129;
+  --done: #6cc38b; --doing: #e6a23c; --wait: #ef7f68; --left: #76837d;
+  --done-soft: #1a2e22; --doing-soft: #33260f; --wait-soft: #3a1d17; --left-soft: #1e2623;
+  --fog: rgba(154, 168, 162, .08);
+}
+* { box-sizing: border-box; }
+body { background: var(--ground); color: var(--ink); font: 16px/1.55 var(--body); margin: 0; padding-inline: 16px; padding-block: 28px 56px; }
+main { max-width: 880px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.15; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(1.9rem, 5vw, 2.6rem); font-weight: 800; letter-spacing: -.01em; }
+h2 { font-size: 1.3rem; font-weight: 600; }
+h3 { font-size: 1.02rem; font-weight: 600; }
+p { margin: 0; }
+code { font: 500 .86em var(--mono); background: var(--left-soft); padding: .08em .35em; border-radius: 4px; }
+.label { font-size: .74rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); }
+section { display: grid; gap: 12px; }
+.head { display: grid; gap: 10px; }
+.goal { font-size: 1.15rem; max-width: 62ch; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .88rem; color: var(--muted); }
+.changes { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font-size: .86rem; padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--ink); }
+
+/* You are here */
+.here { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; display: grid; gap: 14px; }
+.here .where { font-family: var(--display); font-size: 1.35rem; font-weight: 600; }
+.trail { display: flex; gap: 3px; height: 12px; }
+.trail span { flex: 1; border-radius: 2px; background: var(--left-soft); background-image: repeating-linear-gradient(135deg, var(--fog) 0 4px, transparent 4px 8px); }
+.trail span.d { background: var(--done); }
+.trail span.g { background: var(--doing); }
+.counts { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: .9rem; font-variant-numeric: tabular-nums; }
+.dot { display: inline-block; width: .6em; height: .6em; border-radius: 50%; margin-right: .4em; vertical-align: .05em; }
+.dot.done { background: var(--done); } .dot.doing { background: var(--doing); } .dot.left { background: var(--left); } .dot.wait { background: var(--wait); }
+.now { border-top: 1px solid var(--line); padding-top: 12px; }
+
+/* Waiting on you */
+.ask { background: var(--wait-soft); border: 1px solid var(--wait); border-radius: 12px; padding: 18px; display: grid; gap: 10px; }
+.ask .q { font-weight: 700; font-size: 1.08rem; }
+.ctx { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; font-size: .95rem; }
+.ctx dt { font-weight: 700; color: var(--muted); }
+.ctx dd { margin: 0; }
+.opts { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.opts li { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; }
+.opts li.rec { border-color: var(--accent); }
+.badge { font-size: .72rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--accent); margin-left: 6px; }
+
+/* Board */
+.board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 720px) { .board { grid-template-columns: 1fr; } }
+.col { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 8px; align-content: start; }
+.col h3 { display: flex; align-items: center; justify-content: space-between; }
+.col h3 small { font: 400 .85rem var(--body); color: var(--muted); font-variant-numeric: tabular-nums; }
+.col.left { background-image: repeating-linear-gradient(135deg, var(--fog) 0 6px, transparent 6px 14px); }
+.col.left .item { color: var(--muted); }
+.items { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.item { font-size: .95rem; }
+.item details summary { cursor: pointer; }
+.item details summary::after { content: " +"; color: var(--accent); font-weight: 700; }
+.item details[open] summary::after { content: " \2212"; }
+.item .more { font-size: .9rem; color: var(--muted); padding: 4px 0 2px 1.1em; }
+
+/* Threads */
+.thread { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+.thread > summary { padding: 12px 14px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.thread > div { padding: 0 14px 14px; display: grid; gap: 8px; }
+.pill { font-size: .78rem; font-weight: 700; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+.pill.done { background: var(--done-soft); color: var(--done); }
+.pill.doing { background: var(--doing-soft); color: var(--doing); }
+.pill.blocked, .pill.open { background: var(--wait-soft); color: var(--wait); }
+.pill.parked, .pill.locked { background: var(--left-soft); color: var(--muted); }
+.pill.locked { color: var(--done); background: var(--done-soft); }
+
+/* Folded sections */
+details summary { list-style: none; }
+details summary::-webkit-details-marker { display: none; }
+.fold { border-top: 1px solid var(--line); padding-top: 14px; }
+.fold > summary { cursor: pointer; display: flex; align-items: baseline; gap: 10px; }
+.fold > summary h2::before, .thread > summary::before, .idea > summary::before {
+  content: "\25B8"; display: inline-block; width: 1em; color: var(--accent); transition: transform .15s;
+}
+.fold[open] > summary h2::before, .thread[open] > summary::before, .idea[open] > summary::before { transform: rotate(90deg); }
+.fold > div { padding-top: 12px; display: grid; gap: 10px; }
+summary:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.tablewrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: .95rem; }
+th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+th { font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+td.code { font: 500 .88rem var(--mono); white-space: nowrap; color: var(--accent); }
+.dec { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; align-items: baseline; }
+.idea { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+.idea > summary { cursor: pointer; padding: 12px 14px; display: grid; grid-template-columns: 1em 1fr; gap: 2px 0; }
+.idea > summary > * { grid-column: 2; }
+.idea > summary::before { grid-row: 1; grid-column: 1; }
+.idea .layer { padding: 0 14px 14px 30px; display: grid; gap: 8px; }
+.idea .deep { border-left: 3px solid var(--accent-soft); padding-left: 12px; }
+.idea .deep summary { cursor: pointer; color: var(--accent); font-weight: 700; font-size: .9rem; }
+.tools { display: flex; gap: 8px; flex-wrap: wrap; }
+button { font: 700 .82rem var(--body); color: var(--accent); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; cursor: pointer; }
+button:hover { border-color: var(--accent); }
+footer { font-size: .85rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<main id="app"></main>
+
+<script type="application/json" id="fog-state">
+{
+ "version": 1,
+ "project": "Example: notes app",
+ "updated": "2026-01-15 16:40",
+ "language": "en",
+ "artifact_url": "",
+ "goal": "Add a dark mode to the notes app that follows the phone's setting and never makes text hard to read.",
+ "changes_since_last": ["Colour tokens finished", "New question about the settings screen"],
+ "now": {
+  "thread": "Dark mode",
+  "phase": "Phase 2 of 4: switch every screen to the new colours",
+  "doing": "Converting the editor screen. It is the biggest one and has 40 hard-coded colours."
+ },
+ "waiting_on_you": [
+  {
+   "question": "Should people be able to force dark mode on, or should it only follow the phone?",
+   "where": "Phase 2 of 4, settings screen. Everything else in this phase continues without an answer.",
+   "context": "Right now the app copies the phone's light/dark setting. Some apps also add their own switch. It changes one screen and one saved preference.",
+   "options": [
+    { "label": "Follow the phone only", "effect": "Nothing to build. People who want dark notes on a light phone cannot have it.", "recommended": true },
+    { "label": "Add a three-way switch (phone / light / dark)", "effect": "About half a day more. One more setting to test on every screen." }
+   ],
+   "why": "Start simple. The switch can be added later without redoing anything."
+  }
+ ],
+ "threads": [
+  {
+   "name": "Dark mode", "main": true, "status": "doing",
+   "summary": "Phase 2 of 4 underway.",
+   "done": [
+    { "text": "Chose the colours", "detail": "Twelve named colours, each with a light and a dark version, checked for contrast." },
+    { "text": "Wrote the plan", "detail": "PLAN-dark-mode.md, four phases, each with a test." }
+   ],
+   "doing": [ { "text": "Editor screen uses the new colours" } ],
+   "left": [
+    { "text": "Settings and sharing screens" },
+    { "text": "Screenshots test in both themes" },
+    { "text": "Release to testers" }
+   ]
+  },
+  {
+   "name": "Crash on login", "status": "done",
+   "summary": "Fixed and shipped in version 2.3.1.",
+   "done": [ { "text": "Found the cause: an expired token was not refreshed" }, { "text": "Fix released" } ],
+   "doing": [], "left": []
+  }
+ ],
+ "decisions": [
+  { "text": "Colours come from one shared list, never typed into screens", "why": "One place to change, so the two themes cannot drift apart.", "status": "locked" },
+  { "text": "Manual dark-mode switch", "why": "Waiting on you (see the question above).", "status": "open" }
+ ],
+ "decoder": [
+  { "code": "P2", "means": "Phase 2 of the plan: switch every screen to the new colours", "why": "The current phase." },
+  { "code": "tokens", "means": "The shared list of named colours (e.g. \"background\", \"text\")", "why": "Every screen reads its colours from this list." },
+  { "code": "#41", "means": "Pull request 41: the colour list itself", "why": "Already merged; the other work builds on it." }
+ ],
+ "ideas": [
+  {
+   "name": "Contrast",
+   "glance": "How easily text stands out from what is behind it.",
+   "understand": "Grey text on a dark grey background can look stylish and still be hard to read. Contrast is measured as a ratio; 4.5 to 1 is the usual minimum for body text.",
+   "deeper": "The ratio compares the relative brightness of the two colours. Dark themes tend to fail on secondary text and disabled buttons, so those are checked one by one."
+  }
+ ],
+ "plan_files": [
+  { "path": "PLAN-dark-mode.md", "role": "active", "note": "Up to date as of this morning." },
+  { "path": "PLAN.md", "role": "stale", "note": "Older plan for the login crash; finished." }
+ ],
+ "sources": ["this conversation", "PLAN-dark-mode.md", "git log (last 10 commits)"]
+}
+</script>
+
+<script>
+(function () {
+  var S;
+  try { S = JSON.parse(document.getElementById("fog-state").textContent); } catch (e) { S = {}; }
+  var app = document.getElementById("app");
+  var L = (S.language || "en").slice(0, 2) === "fr" ? {
+    here: "Vous êtes ici", now: "En ce moment", wait: "En attente de vous", done: "Fait", doing: "En cours", left: "À faire",
+    threads: "Autres fils", decoder: "Décodeur de références", decisions: "Décisions", ideas: "Idées à comprendre",
+    plans: "Fichiers de plan", code: "Référence", means: "Veut dire", why: "Pourquoi ça compte", rec: "Recommandé",
+    where: "Où", ctx: "Contexte", reco: "Pourquoi", deeper: "Aller plus loin", openAll: "Tout ouvrir", closeAll: "Tout fermer",
+    since: "Depuis votre dernier regard", updated: "Mis à jour", sources: "Sources", refresh: "Relancez /fog pour mettre à jour.",
+    none: "Rien pour l’instant.", nothing: "Rien n’attend de réponse de votre part."
+  } : {
+    here: "You are here", now: "Right now", wait: "Waiting on you", done: "Done", doing: "Doing", left: "Remaining",
+    threads: "Other threads", decoder: "Reference decoder", decisions: "Decisions", ideas: "Ideas you need",
+    plans: "Plan files", code: "Reference", means: "Means", why: "Why it matters", rec: "Recommended",
+    where: "Where", ctx: "Context", reco: "Why", deeper: "Go deeper", openAll: "Open all", closeAll: "Close all",
+    since: "Since your last look", updated: "Updated", sources: "Sources", refresh: "Run /fog again to refresh.",
+    none: "Nothing yet.", nothing: "Nothing is waiting on you."
+  };
+  document.documentElement.lang = S.language || "en";
+
+  function el(tag, cls, kids) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    [].concat(kids || []).forEach(function (k) {
+      if (k == null || k === "") return;
+      n.appendChild(typeof k === "string" ? txt(k) : k);
+    });
+    return n;
+  }
+  // Plain text with `code` spans; never parsed as HTML.
+  function txt(s) {
+    var f = document.createDocumentFragment();
+    String(s).split("`").forEach(function (part, i) {
+      if (!part) return;
+      f.appendChild(i % 2 ? el("code", "", document.createTextNode(part)) : document.createTextNode(part));
+    });
+    return f;
+  }
+  function arr(a) { return Array.isArray(a) ? a : []; }
+  function fold(title, count, body, open) {
+    var d = el("details", "fold", [el("summary", "", [el("h2", "", title), count != null ? el("span", "muted", String(count)) : null]), el("div", "", body)]);
+    if (open) d.open = true;
+    return d;
+  }
+  function list(items) {
+    if (!items.length) return el("p", "muted item", L.none);
+    return el("ul", "items", items.map(function (it) {
+      it = typeof it === "string" ? { text: it } : it;
+      if (!it.detail) return el("li", "item", it.text);
+      return el("li", "item", el("details", "", [el("summary", "", it.text), el("p", "more", it.detail)]));
+    }));
+  }
+
+  var threads = arr(S.threads);
+  var main = threads.filter(function (t) { return t.main; })[0] || threads[0] || { done: [], doing: [], left: [] };
+  var others = threads.filter(function (t) { return t !== main; });
+
+  // Header
+  app.appendChild(el("header", "head", [
+    el("div", "label", "Fog map"),
+    el("h1", "", S.project || ""),
+    S.goal ? el("p", "goal", S.goal) : null,
+    el("div", "meta", [S.updated ? el("span", "", L.updated + " " + S.updated) : null])
+  ]));
+  if (arr(S.changes_since_last).length) {
+    app.appendChild(el("section", "", [el("div", "label", L.since),
+      el("div", "changes", S.changes_since_last.map(function (c) { return el("span", "chip", c); }))]));
+  }
+
+  // You are here
+  var d = arr(main.done).length, g = arr(main.doing).length, l = arr(main.left).length, w = arr(S.waiting_on_you).length;
+  var trail = el("div", "trail");
+  trail.setAttribute("role", "img");
+  trail.setAttribute("aria-label", d + " " + L.done + ", " + g + " " + L.doing + ", " + l + " " + L.left);
+  for (var i = 0; i < d + g + l; i++) trail.appendChild(el("span", i < d ? "d" : i < d + g ? "g" : ""));
+  var now = S.now || {};
+  app.appendChild(el("section", "here", [
+    el("div", "label", L.here + (now.thread ? " · " + now.thread : "")),
+    now.phase ? el("div", "where", now.phase) : null,
+    d + g + l ? trail : null,
+    el("div", "counts", [
+      el("span", "", [el("span", "dot done"), d + " " + L.done]),
+      el("span", "", [el("span", "dot doing"), g + " " + L.doing]),
+      el("span", "", [el("span", "dot left"), l + " " + L.left]),
+      el("span", "", [el("span", "dot wait"), w + " " + L.wait])
+    ]),
+    now.doing ? el("p", "now", [el("strong", "", L.now + ": "), now.doing]) : null
+  ]));
+
+  // Waiting on you
+  var asks = arr(S.waiting_on_you);
+  app.appendChild(el("section", "", [el("h2", "", L.wait)].concat(asks.length ? asks.map(function (q) {
+    var ctx = el("dl", "ctx", [
+      q.where ? el("dt", "", L.where) : null, q.where ? el("dd", "", q.where) : null,
+      q.context ? el("dt", "", L.ctx) : null, q.context ? el("dd", "", q.context) : null
+    ]);
+    var opts = el("ol", "opts", arr(q.options).map(function (o) {
+      return el("li", o.recommended ? "rec" : "", [el("strong", "", o.label), o.recommended ? el("span", "badge", L.rec) : null,
+        o.effect ? el("div", "muted", o.effect) : null]);
+    }));
+    return el("div", "ask", [el("p", "q", q.question), ctx, arr(q.options).length ? opts : null,
+      q.why ? el("p", "", [el("strong", "", L.reco + ": "), q.why]) : null]);
+  }) : [el("p", "muted", L.nothing)])));
+
+  // Main thread board
+  app.appendChild(el("section", "", [
+    el("h2", "", main.name || ""),
+    el("div", "board", [
+      el("div", "col", [el("h3", "", [el("span", "", [el("span", "dot done"), L.done]), el("small", "", String(d))]), list(arr(main.done))]),
+      el("div", "col", [el("h3", "", [el("span", "", [el("span", "dot doing"), L.doing]), el("small", "", String(g))]), list(arr(main.doing))]),
+      el("div", "col left", [el("h3", "", [el("span", "", [el("span", "dot left"), L.left]), el("small", "", String(l))]), list(arr(main.left))])
+    ])
+  ]));
+
+  // Other threads
+  if (others.length) {
+    app.appendChild(el("section", "", [el("h2", "", L.threads)].concat(others.map(function (t) {
+      var parts = [];
+      [["done", L.done], ["doing", L.doing], ["left", L.left]].forEach(function (k) {
+        if (arr(t[k[0]]).length) parts.push(el("div", "", [el("div", "label", k[1]), list(t[k[0]])]));
+      });
+      return el("details", "thread", [el("summary", "", [el("strong", "", t.name), el("span", "pill " + (t.status || "parked"), t.status || ""), t.summary ? el("span", "muted", t.summary) : null]),
+        el("div", "", parts)]);
+    }))));
+  }
+
+  // Folded sections
+  var tools = el("div", "tools", [el("button", "", L.openAll), el("button", "", L.closeAll)]);
+  tools.children[0].type = tools.children[1].type = "button";
+  tools.children[0].onclick = function () { app.querySelectorAll("details").forEach(function (x) { x.open = true; }); };
+  tools.children[1].onclick = function () { app.querySelectorAll("details").forEach(function (x) { x.open = false; }); };
+  app.appendChild(tools);
+
+  var dec = arr(S.decoder);
+  if (dec.length) app.appendChild(fold(L.decoder, dec.length, el("div", "tablewrap", el("table", "", [
+    el("thead", "", el("tr", "", [el("th", "", L.code), el("th", "", L.means), el("th", "", L.why)])),
+    el("tbody", "", dec.map(function (r) { return el("tr", "", [el("td", "code", r.code), el("td", "", r.means), el("td", "muted", r.why || "")]); }))
+  ]))));
+
+  var decs = arr(S.decisions);
+  if (decs.length) app.appendChild(fold(L.decisions, decs.length, decs.map(function (x) {
+    return el("div", "dec", [el("span", "pill " + (x.status || "locked"), x.status || "locked"), el("div", "", [el("strong", "", x.text), x.why ? el("div", "muted", x.why) : null])]);
+  })));
+
+  var ideas = arr(S.ideas);
+  if (ideas.length) app.appendChild(fold(L.ideas, ideas.length, ideas.map(function (x) {
+    var layer = el("div", "layer", [x.understand ? el("p", "", x.understand) : null,
+      x.deeper ? el("details", "deep", [el("summary", "", L.deeper), el("p", "", x.deeper)]) : null]);
+    return el("details", "idea", [el("summary", "", [el("strong", "", x.name), el("span", "muted", x.glance || "")]), layer]);
+  })));
+
+  var plans = arr(S.plan_files);
+  if (plans.length) app.appendChild(fold(L.plans, plans.length, plans.map(function (p) {
+    return el("div", "dec", [el("span", "pill " + (p.role === "active" ? "locked" : p.role === "stale" ? "open" : "parked"), p.role || ""),
+      el("div", "", [el("code", "", p.path), p.note ? el("div", "muted", p.note) : null])]);
+  })));
+
+  app.appendChild(el("footer", "", (arr(S.sources).length ? L.sources + ": " + S.sources.join(" · ") + ". " : "") + L.refresh));
+})();
+</script>
