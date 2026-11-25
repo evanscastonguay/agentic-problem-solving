@@ -88,7 +88,7 @@ Everything deploys together; nothing private enters this repo.
 skills/       one SKILL.md per skill — the only thing to edit
 release.sh    deploys skills/ to each tool; generates Codex/Cursor prompts and Windsurf workflows on the fly
 global-rules.md  always-on rules, merged into ~/.claude/CLAUDE.md and ~/.codex/AGENTS.md at deploy
-docs/         why it works, a 45-minute talk, training guides — also the GitHub Pages site
+docs/         why it works, a 45-minute talk, a French presentation, training guides — also the GitHub Pages site
 ```
 
 Add a skill: create `skills/<name>/SKILL.md`, then `./release.sh --all`. Deploys only remove skills they installed, so skills from plugins or other sources stay put.
@@ -104,6 +104,7 @@ Longer version: [docs/method.md](docs/method.md).
 ## Teach it
 
 - [docs/talk.md](docs/talk.md) — a 45-minute talk, slide by slide, with speaker notes
+- [docs/presentation/](docs/presentation/) — « Résoudre des problèmes avec un agent IA », a French talk (PowerPoint and PDF) for non-technical audiences
 - [docs/training/](docs/training/) — practice guides for steps 3, 4 and 5: worked examples, common mistakes, exercises with answers
 
 ## License
